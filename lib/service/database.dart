@@ -35,4 +35,51 @@ class Database {
       rethrow;
     }
   }
+
+  Future<Stream<List<WeightModel>>> weightStream(String uid) async {
+    return _firestore
+        .collection("users")
+        .doc(uid)
+        .collection("weights")
+        .orderBy("exerciseId", descending: true)
+        .snapshots()
+        .map((QuerySnapshot query) {
+      List<WeightModel> retVal = [];
+      for (var element in query.docs) {
+        retVal.add(WeightModel.fromDocumentSnapshot(element));
+      }
+      return retVal;
+    });
+  }
+
+  Future<void> addWeight(String uid, WeightModel weight) async {
+    try {
+      var addedWeight =
+          weight.exerciseWeight! + weight.addedExeciseWeightCount!;
+      _firestore
+          .collection("users")
+          .doc(uid)
+          .collection("weights")
+          .doc(weight.documentId)
+          .update({"exerciseWeight": addedWeight});
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+   Future<void> removeWeight(String uid, WeightModel weight) async {
+    try {
+      var addedWeight =
+          weight.exerciseWeight! - weight.addedExeciseWeightCount!;
+      _firestore
+          .collection("users")
+          .doc(uid)
+          .collection("weights")
+          .doc(weight.documentId)
+          .update({"exerciseWeight": addedWeight});
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

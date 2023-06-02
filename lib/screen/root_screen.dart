@@ -67,6 +67,11 @@ class Root extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
         child: Obx(() {
+          if (selectedIndex.value == 0) {
+            return const WeightListScreen();
+          } else if (selectedIndex.value == 1) {
+            return const BodyTrackScreen();
+          }
           return LoginScreen();
         }),
       ),
